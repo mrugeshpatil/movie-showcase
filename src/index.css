@@ -12,7 +12,6 @@ body {
   padding: 4rem;
 }
 
-
 .selected {
   border: 1px solid #629cfa;
   background-color: #cedcf4;
@@ -21,6 +20,22 @@ body {
 .error-message {
   color: #db0000;
   padding: 1rem;
-  margin: 0.5rem 0;
+  margin: 1rem 0;
   background-color: #f2d5b7;
+}
+
+.success-message {
+  color: #fff;
+  padding: 1rem;
+  margin: 1rem 0;
+  background-color: #006c31;
+}
+.total-badge {
+  font-size: 18px;
+  color: #313131;
+  padding: 1rem 0;
+}
+.total-badge span:nth-child(2) {
+  font-weight: 600;
+  font-size: 20px;
 }

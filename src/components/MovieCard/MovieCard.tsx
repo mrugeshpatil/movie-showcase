@@ -10,22 +10,43 @@ const MovieCard = (props: MovieCardProps) => {
   const [selected, setSelected] = useState("");
   const [exceedTextLimit, setExeedTextLimit] = useState(true);
   const [reviewText, setReviewText] = useState("");
-  console.log("====> exceedTextLimit : ", exceedTextLimit);
+  const [reviewResponse, setReviewResponse] = useState(null);
+  const [reviewResponseError, setReviewResponseError] = useState("");
+
   const addReview = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     title: string
   ) => {
     selected === "" ? setSelected("selected") : setSelected("");
-    // open Dialogue box to write a review for target movie
   };
 
-  // submit target movie review
-  const submitReview = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
-    exceedTextLimit
-      ? console.log("---> Error exceed text can not submit")
-      : console.log("Ready to submit review");
+  const sendReview = async () => {
+    const url = "https://giddy-beret-cod.cyclic.app/submitReview";
+    // check if review text input is not empty
+    if (reviewText.length === 0) {
+      setReviewResponseError("Review should not be empty");
+      setReviewText("");
+      return;
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          review: reviewText,
+        }),
+        headers: {
+          "content-type": "application/json; charset=UTF-8",
+        },
+      });
+      const resData = await response.json();
+      setReviewText("");
+      setReviewResponseError("");
+      setReviewResponse(resData.message);
+      //clear review text input
+    } catch (err) {
+      setReviewResponseError("Error submitting review try again...");
+    }
   };
 
   const validateTextLength = (
@@ -34,7 +55,7 @@ const MovieCard = (props: MovieCardProps) => {
     let reviewTxt = event.target.value;
     let charLength = reviewTxt.length;
     setReviewText(reviewTxt);
-    charLength > 10 ? setExeedTextLimit(false) : setExeedTextLimit(true);
+    charLength > 100 ? setExeedTextLimit(false) : setExeedTextLimit(true);
   };
 
   return (
@@ -65,6 +86,8 @@ const MovieCard = (props: MovieCardProps) => {
                 <textarea
                   id="review"
                   name="review"
+                  rows={4}
+                  cols={50}
                   onChange={(event) => validateTextLength(event)}
                 ></textarea>
               </div>
@@ -73,13 +96,17 @@ const MovieCard = (props: MovieCardProps) => {
                   Can't exceed more than 100 characters
                 </div>
               ) : null}
-
-              <Button
-                variant="contained"
-                onClick={(event) => submitReview(event)}
-              >
+              <Button variant="contained" onClick={sendReview}>
                 Submit Review
               </Button>
+              <div>
+                {reviewResponse && (
+                  <h4 className="success-message">{reviewResponse}</h4>
+                )}
+                {reviewResponseError && (
+                  <h4 className="error-message">{reviewResponseError}</h4>
+                )}
+              </div>
             </div>
           )}
         </TableCell>

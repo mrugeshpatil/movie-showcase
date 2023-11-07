@@ -14,5 +14,17 @@ export const StatusAPI = (props: StatusProps) => {
       : status === "error"
       ? "Error probelm loading movies!"
       : null;
-  return <div>Status - {message}</div>;
+  return (
+    <div
+      className={
+        status === "success"
+          ? "success-message"
+          : status === "error"
+          ? "error-message"
+          : ""
+      }
+    >
+      Status - {message}
+    </div>
+  );
 };
